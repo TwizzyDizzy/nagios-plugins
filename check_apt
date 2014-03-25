@@ -3,7 +3,7 @@
 # check_debian_packages - nagios plugin
 #
 #
-# Copyright (C) 2005 Francesc Guasch (main effort)
+# Copyright (C) 2005 Francesc Guasch (main effort, see http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_apt/details)
 # Copyright (C) 2014 Thomas Dalichow (small changes, mainly for convenience)
 #
 # This program is free software; you can redistribute it and/or
