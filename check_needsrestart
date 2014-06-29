@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# this check needs to be executed as 'root'
+
+# TODO
+# 1. It's not tested on platforms that run some kind of lightweight virtualiztation such as Linux vServer, LXC, docker or OpenVZ
+#    since this check is based on checkrestart which itself is based on lsof there are probably some quircks when it comes to the host seeing all processes
+#    possible solutions:
+#    - only run this check on the virtualization host
+#    - fix this check to only consider processes in the current PID namespace. If it's the root PID namespace, ignore all processes NOT belonging to the root PID namespace
+
+
+EXIT=3
+MESSAGE="Oops! Something I have not foreseen must have gone wrong!"
+
+# sanity checks (do 'lsof' and 'checkrestart' exist and are they executable)
+LSOF=$(command -v lsof)
+CHECKRESTART=$(command -v checkrestart)
+if [ -z "$LSOF" ]; then
+	MESSAGE="Oops! 'lsof' is not availabe or not executable. Please make sure to install 'lsof' or fix other issues that prevent lsof from being executed."
+	EXIT=2
+else
+	if [ -z "$CHECKRESTART" ]; then
+		# no checkrestart found, falling back to parsing of 'lsof' output
+		COMMAND_OUTPUT=$(for PID in `lsof | grep "DEL\|deleted" | awk '/\.so/ {print $2}'`; do ps --no-headers --pid $PID | awk {'print $4'}; done | sort -u)
+	else
+		# unfortunately 'checkrestart' gives an output even though nothing has been found
+		COMMAND_OUTPUT=$(/usr/sbin/checkrestart | awk '/\// {print $2}' | sort -u)
+		CHECKRESTART_CLUE=" use 'checkrestart' to check which processes are affected or"
+	fi
+
+	if [ -z "$COMMAND_OUTPUT" ]; then
+		MESSAGE="OK - No old version of upgraded libraries seem (!) to be in use by any process."
+		EXIT=0
+	else
+		FINAL_OUTPUT=$(echo $COMMAND_OUTPUT | tr '\n' ' ')
+		MESSAGE="CRITICAL - Old versions of upgraded libraries seem (!) to be in use. Please$CHECKRESTART_CLUE investigate further on the basis of the following list of processes: $FINAL_OUTPUT"
+		EXIT=2
+	fi
+fi
+
+echo $MESSAGE
+exit $EXIT
+
