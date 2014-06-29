@@ -1,6 +1,8 @@
 #!/bin/sh
 
-# this check needs to be executed as 'root'
+# This check uses the debian tool 'checkrestart' (contained in 'debian-goodies' package) to find processes that use libraries that have been upgraded
+# if checkrestart is not available there is a fallback to parse the lsof output for deleted libraries that are still in use
+# The check needs to be executed 'root' (if possible: use sudo for the check command only!)
 
 # TODO
 # 1. It's not tested on platforms that run some kind of lightweight virtualiztation such as Linux vServer, LXC, docker or OpenVZ
