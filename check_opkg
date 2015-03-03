@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# check_opkg - check for available upgrades on OpenWRT (https://openwrt.org/)
+# prerequisites: opkg install bash
+#
+# check goes into WARNING state, if there are any packages to be upgraded
+# check goes into CRITICAL state, if one of the packages in $CRITICAL_PACKAGES not up to date
+
+EXIT=3
+MESSAGE="UNKNOWN"
+CRITICAL_PACKAGES="openvpn
+iptables
+dropbear
+nrpe
+"
+
+UPGRADABLE_PACKAGES=$(opkg list-upgradable)
+UPGRADABLE_CRITICAL=""
+UPGRADABLE_NORMAL=""
+
+if [[ -z "$UPGRADABLE_PACKAGES" ]]; then
+	echo "OK - there are no upgrades available"
+	exit 0
+else
+	for PKG in $UPGRADABLE_PACKAGES; do
+		for CRIT_PKG in $CRITICAL_PACKAGES; do
+			if [[ "$PKG" == "$CRIT_PKG" ]]; then
+				UPGRADABLE_CRITICAL="\"$PKG\" $UPGRADABLE_CRITICAL"
+			else
+				UPGRADABLE_NORMAL="\"$PKG\" $UPGRADABLE_NORMAL"
+			fi
+		done
+	done
+fi
+
+UPGRADABLE_CRITICAL=$(echo $UPGRADABLE_CRITICAL | sed 's/\ /\n/g' | uniq)
+UPGRADABLE_NORMAL=$(echo $UPGRADABLE_NORMAL | sed 's/\ /\n/g' | uniq)
+
+if [[ -z "$UPGRADABLE_CRITICAL" ]]; then
+	EXIT=1
+	MESSAGE="WARNING - the following packages are not up to date: $UPGRADABLE_NORMAL"
+else
+	EXIT=2
+	MESSAGE="CRITICAL - the following packages are not up to date and are defined to be critical for overall system security: $UPGRADABLE_CRITICAL"
+	if [[ -n "$UPGRADABLE_NORMAL" ]]; then
+		MESSAGE="$MESSAGE. All packages that have updates: $UPGRADABLE_NORMAL"
+	fi
+fi
+echo $MESSAGE
+exit $EXIT
