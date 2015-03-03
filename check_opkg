@@ -14,6 +14,14 @@ dropbear
 nrpe
 "
 
+# just make sure package database is updated
+opkg --verbosity=0 update
+
+if [[ $? -ne 0 ]]; then
+	echo "CRITICAL - package database could not be updated"
+	exit 2
+fi
+
 UPGRADABLE_PACKAGES=$(opkg list-upgradable)
 UPGRADABLE_CRITICAL=""
 UPGRADABLE_NORMAL=""
