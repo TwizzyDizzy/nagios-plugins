@@ -14,10 +14,14 @@ nrpe
 "
 
 # just make sure package database is updated
-opkg --verbosity=0 update
+OPKG_UPDATE=$(opkg --verbosity=0 update)
+OPKG_UPDATE_EXIT_CODE=$?
 
-if [[ $? -ne 0 ]]; then
-	echo "CRITICAL - package database could not be updated"
+# not tested, but I guess error out put may be multi line, so just convert \n to space
+OPKG_UPDATE_CLEAN=$(echo $OPKG_UPDATE | sed 's/\n/\ /')
+
+if [[ "$OPKG_UPDATE_EXIT_CODE" -ne "0" ]]; then
+	echo "CRITICAL - package database could not be updated. Reason: $OPKG_UPDATE_CLEAN"
 	exit 2
 fi
 
