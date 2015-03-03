@@ -8,8 +8,7 @@
 
 EXIT=3
 MESSAGE="UNKNOWN"
-CRITICAL_PACKAGES="openvpn
-iptables
+CRITICAL_PACKAGES="iptables
 dropbear
 nrpe
 "
