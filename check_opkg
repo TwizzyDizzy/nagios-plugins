@@ -1,33 +1,31 @@
-#!/bin/bash
+#!/bin/ash
 
 # check_opkg - check for available upgrades on OpenWRT (https://openwrt.org/)
-# prerequisites: opkg install bash nrpe
+# prerequisites: make sure you have NRPE up and running, so you can call this script from your
+#                remote nagios/icinga instance
 #
-# check goes into WARNING state, if there are any packages to be upgraded
-# check goes into CRITICAL state, if one of the packages in $CRITICAL_PACKAGES not up to date
+# check goes WARNING, if there are any packages to be upgraded
+# check goes CRITICAL, if one of the packages in $CRITICAL_PACKAGES is not up to date
 
 EXIT=3
 MESSAGE="UNKNOWN"
+UPGRADABLE_CRITICAL=""
+UPGRADABLE_NORMAL=""
 CRITICAL_PACKAGES="iptables
 dropbear
 nrpe
 "
 
 # just make sure package database is updated
-OPKG_UPDATE=$(opkg --verbosity=0 update)
+OPKG_UPDATE_OUTPUT=$(opkg --verbosity=0 update 2>&1)
 OPKG_UPDATE_EXIT_CODE=$?
 
-# not tested, but I guess error out put may be multi line, so just convert \n to space
-OPKG_UPDATE_CLEAN=$(echo $OPKG_UPDATE | sed 's/\n/\ /')
-
 if [[ "$OPKG_UPDATE_EXIT_CODE" -ne "0" ]]; then
-	echo "CRITICAL - package database could not be updated. Reason: $OPKG_UPDATE_CLEAN"
+	echo -e "CRITICAL - package database could not be updated.\nReason: $OPKG_UPDATE_OUTPUT"
 	exit 2
 fi
 
-UPGRADABLE_PACKAGES=$(opkg list-upgradable)
-UPGRADABLE_CRITICAL=""
-UPGRADABLE_NORMAL=""
+UPGRADABLE_PACKAGES=$(opkg list-upgradable | cut -d" " -f1)
 
 if [[ -z "$UPGRADABLE_PACKAGES" ]]; then
 	echo "OK - there are no upgrades available"
@@ -36,16 +34,16 @@ else
 	for PKG in $UPGRADABLE_PACKAGES; do
 		for CRIT_PKG in $CRITICAL_PACKAGES; do
 			if [[ "$PKG" == "$CRIT_PKG" ]]; then
-				UPGRADABLE_CRITICAL="\"$PKG\" $UPGRADABLE_CRITICAL"
+				UPGRADABLE_CRITICAL="\"$PKG\"\n$UPGRADABLE_CRITICAL"
 			else
-				UPGRADABLE_NORMAL="\"$PKG\" $UPGRADABLE_NORMAL"
+				UPGRADABLE_NORMAL="\"$PKG\"\n$UPGRADABLE_NORMAL"
 			fi
 		done
 	done
 fi
 
-UPGRADABLE_CRITICAL=$(echo $UPGRADABLE_CRITICAL | sed 's/\ /\n/g' | uniq)
-UPGRADABLE_NORMAL=$(echo $UPGRADABLE_NORMAL | sed 's/\ /\n/g' | uniq)
+UPGRADABLE_CRITICAL=$(echo -e $UPGRADABLE_CRITICAL | uniq)
+UPGRADABLE_NORMAL=$(echo -e $UPGRADABLE_NORMAL | uniq)
 
 if [[ -z "$UPGRADABLE_CRITICAL" ]]; then
 	EXIT=1
