@@ -1,0 +1,8 @@
+name: nagios-plugins
+description: "file:///README.md"
+url: "https://github.com/TwizzyDizzy/nagios-plugins"
+tags: OpenWRT, APT, Debian
+vendor: Linux
+target: 
+type: Plugin
+license: gplv3
