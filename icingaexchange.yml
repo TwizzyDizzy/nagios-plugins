@@ -6,3 +6,23 @@ vendor: Linux
 target: 
 type: Plugin
 license: gplv3
+releases: 
+  - 
+    name: 1.0
+    description: "1.0 Release"
+    files: 
+      - 
+        name: check_opgk
+        url: "file:///check_opkg"
+        description: "First release on icinga exchange"
+        checksum: 4c29ca500edc6ba7c77cb509a2e83fd4
+      - 
+        name: check_apt
+        url: "file:///check_apt"
+        description: "First release on icinga exchange"
+        checksum: e2ccea789d6eb6bdb73ae8ea7e230f74
+      - 
+        name: check_needsrestart
+        url: "file:///check_needsrestart"
+        description: "First release on icinga exchange"
+        checksum: 16d66a247a4661e5f635dc73e01039bd
