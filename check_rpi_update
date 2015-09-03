@@ -1,10 +1,17 @@
 #!/bin/bash
 
-# check_rpi_update - check for available firmware upgrades on a Raspberry Pi 2 (Model B) (https://www.raspberrypi.org/)
-# prerequisites: make sure you have NRPE up and running, so you can call this script from your
-#                remote nagios/icinga instance.
+# check_rpi_update - check for available firmware upgrades on a Raspberry Pi 2
+# (Model B) (https://www.raspberrypi.org/) prerequisites: make sure you have
+# NRPE up and running, so you can call this script from your remote
+# nagios/icinga instance.
 #
-# check goes CRITICAL, if there are new commits available in the Raspberry Pi firmware repository
+# check goes CRITICAL, if there are new commits available in the
+# Raspberry Pi firmware repository
+#
+# This check assumes, that pull request #191 for Hexxeh/rpi-update @ Github
+# has been merged. I will remove this comment, if the pull request has been
+# accepted. For now you have to replace your rpi-update script with this one:
+# https://github.com/TwizzyDizzy/rpi-update/blob/master/rpi-update
 
 EXIT=3
 MESSAGE="UNKNOWN"
