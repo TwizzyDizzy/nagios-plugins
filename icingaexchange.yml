@@ -8,8 +8,8 @@ type: Plugin
 license: gplv3
 releases: 
   - 
-    name: nagios-plugins
-    description: "1.0 Release"
+    name: 1.1
+    description: ""
     files: 
       - 
         name: check_opgk
@@ -24,7 +24,7 @@ releases:
       - 
         name: check_needsrestart
         url: "file:///check_needsrestart"
-        description: "Check for deleted libraries on a Debian machine. Remember that 'aptitude upgrade $PACKAGE' does not necessarily restart services, so they might use old libraries though the package has been upgraded."
+        description: "Check that utilizes the script checkrestart of the Debian package debian-goodies."
         checksum: 16d66a247a4661e5f635dc73e01039bd
       - 
         name: check_rpi_update
