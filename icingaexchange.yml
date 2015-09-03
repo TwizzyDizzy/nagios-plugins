@@ -1,28 +1,33 @@
 name: nagios-plugins
 description: "file:///README.md"
 url: "https://github.com/TwizzyDizzy/nagios-plugins"
-tags: OpenWRT, APT, Debian
+tags: OpenWRT, APT, Debian, Raspberry
 vendor: Linux
 target: 
 type: Plugin
 license: gplv3
 releases: 
   - 
-    name: 1.0
+    name: nagios-plugins
     description: "1.0 Release"
     files: 
       - 
         name: check_opgk
         url: "file:///check_opkg"
-        description: "First release on icinga exchange"
+        description: "Check for available updates on an OpenWRT router."
         checksum: 4c29ca500edc6ba7c77cb509a2e83fd4
       - 
         name: check_apt
         url: "file:///check_apt"
-        description: "First release on icinga exchange"
+        description: "Check for available updates on Debian machine."
         checksum: e2ccea789d6eb6bdb73ae8ea7e230f74
       - 
         name: check_needsrestart
         url: "file:///check_needsrestart"
-        description: "First release on icinga exchange"
+        description: "Check for deleted libraries on a Debian machine. Remember that 'aptitude upgrade $PACKAGE' does not necessarily restart services, so they might use old libraries though the package has been upgraded."
         checksum: 16d66a247a4661e5f635dc73e01039bd
+      - 
+        name: check_rpi_update
+        url: "file:///check_rpi_update"
+        description: "Script for checking for updates for/on the Raspberry Pi (2, Model B)"
+        checksum: bd825949917390eabceac25e41859fc6
