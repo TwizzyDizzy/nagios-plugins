@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# check_rpi_update - check for available firmware upgrades on a Raspberry Pi 2 (Model B) (https://www.raspberrypi.org/)
+# prerequisites: make sure you have NRPE up and running, so you can call this script from your
+#                remote nagios/icinga instance.
+#
+# check goes CRITICAL, if there are new commits available in the Raspberry Pi firmware repository
+
+EXIT=3
+MESSAGE="UNKNOWN"
+RPI_BINARY_FAIL=0
+
+# do not auto-update the "rpi-update" script due to invoking the monitoring
+export UPDATE_SELF=0
+
+# do not suggest to take action (suppress yes/no dialogue)
+export JUST_CHECK=1
+
+RPI_UPDATE_BINARY=$(command -v rpi-update)
+if [ -z "$RPI_UPDATE_BINARY" ] || [ ! -x "$RPI_UPDATE_BINARY" ]; then
+	RPI_BINARY_FAIL=1
+fi
+
+if [[ "$RPI_BINARY_FAIL" -eq "1" ]]; then
+        MESSAGE="UNKNOWN - 'rpi-update' is not availabe or not executable. Please make sure to install 'rpi-update'. For further information, see https://github.com/Hexxeh/rpi-update/blob/master/README.md."
+        EXIT=3
+else
+	NEW_COMMITS_AVAILABLE=$(rpi-update | grep ^Commit:\  | wc -l)
+	if [[ "$NEW_COMMITS_AVAILABLE" -eq "0" ]]; then
+		MESSAGE="OK - there are no upgrades available."
+		EXIT=0
+	else
+		MESSAGE="CRITICAL - There are $NEW_COMMITS_AVAILABLE new commits to the Raspberry Pi Firmware."
+		EXIT=2
+	fi
+fi
+
+echo $MESSAGE
+exit $EXIT
