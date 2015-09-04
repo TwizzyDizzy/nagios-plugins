@@ -6,12 +6,7 @@
 # nagios/icinga instance.
 #
 # check goes CRITICAL, if there are new commits available in the
-# Raspberry Pi firmware repository
-#
-# This check assumes, that pull request #191 for Hexxeh/rpi-update @ Github
-# has been merged. I will remove this comment, if the pull request has been
-# accepted. For now you have to replace your rpi-update script with this one:
-# https://github.com/TwizzyDizzy/rpi-update/blob/master/rpi-update
+# Raspberry Pi firmware repository.
 
 EXIT=3
 MESSAGE="UNKNOWN"
