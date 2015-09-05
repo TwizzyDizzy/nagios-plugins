@@ -30,4 +30,4 @@ releases:
         name: check_rpi_update
         url: "file:///check_rpi_update"
         description: "Script for checking for updates for/on the Raspberry Pi (2, Model B)"
-        checksum: bd825949917390eabceac25e41859fc6
+        checksum: 8432831d1ca6d36526fb867818936725
