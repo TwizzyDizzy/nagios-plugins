@@ -1,6 +1,6 @@
 #!/bin/ash
 
-# check_opkg - check for available upgrades on OpenWRT (https://openwrt.org/)
+# check_opkg - check for available upgrades on OpenWRT (https://openwrt.org/) or LEDE (https://lede-project.org/)
 # prerequisites: make sure you have NRPE up and running, so you can call this script from your
 #                remote nagios/icinga instance
 #
@@ -34,9 +34,9 @@ else
 	for PKG in $UPGRADABLE_PACKAGES; do
 		for CRIT_PKG in $CRITICAL_PACKAGES; do
 			if [[ "$PKG" == "$CRIT_PKG" ]]; then
-				UPGRADABLE_CRITICAL="\"$PKG\"\n$UPGRADABLE_CRITICAL"
+				UPGRADABLE_CRITICAL="$PKG\n$UPGRADABLE_CRITICAL"
 			else
-				UPGRADABLE_NORMAL="\"$PKG\"\n$UPGRADABLE_NORMAL"
+				UPGRADABLE_NORMAL="$PKG\n$UPGRADABLE_NORMAL"
 			fi
 		done
 	done
