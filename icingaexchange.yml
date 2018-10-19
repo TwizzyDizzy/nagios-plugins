@@ -8,7 +8,7 @@ type: Plugin
 license: gplv3
 releases: 
   - 
-    name: 1.1
+    name: 1.1.1
     description: ""
     files: 
       - 
