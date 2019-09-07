@@ -1,6 +1,6 @@
 #!/bin/ash
 
-# check_opkg - check for available upgrades on OpenWRT (https://openwrt.org/) or LEDE (https://lede-project.org/)
+# check_opkg - check for available upgrades on OpenWRT (https://openwrt.org/)
 # prerequisites: make sure you have NRPE up and running, so you can call this script from your
 #                remote nagios/icinga instance
 #
